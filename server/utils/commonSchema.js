@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const commonSchema = new mongoose.Schema({
   createdAt: {
@@ -11,4 +11,4 @@ const commonSchema = new mongoose.Schema({
   },
 });
 
-module.exports = commonSchema;
+module.exports = { commonSchema };

@@ -1,14 +1,24 @@
-require("dotenv").config();
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const user = require('./routes/user');
 
-// db
-const connectDB = require("./db/connect");
+// express
+const app = express();
+app.use(express.json());
 
-console.log("Hello i am here");
-const port = process.env.PORT;
+// routes
+app.use('/api/v1/', user);
+
+const port = process.env.PORT || 3000;
 
 const start = async () => {
-  return {
-    await connectDB(process.env.MONGO_URI);
-
-  };
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    app.listen(port, console.log(`Server is listening on port ${port}...`));
+  } catch (error) {
+    console.log(error);
+  }
 };
+
+start();
