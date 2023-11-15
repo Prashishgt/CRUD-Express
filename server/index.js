@@ -1,28 +1,27 @@
-import dotenv from "dotenv";
 import express from "express";
-import mongoose from "mongoose";
-
-import indexRouter from "./src/routes/index";
+import dotenv from "dotenv";
+import mongoose, { connect } from "mongoose";
+import indexRouter from "./routes/index.js";
 
 dotenv.config();
-// constants
-const port = process.env.PORT || 8000;
-
-const dbString = process.env.MONGO_URI;
 
 const app = express();
+
+// constants
+const port = process.env.PORT;
+const dbString = process.env.MONGO_URI;
+
 // middleware
 app.use(express.json());
 
-// route
+// routes
 app.use("/", indexRouter);
 
 const start = async () => {
   try {
-    console.log("I am here");
     await mongoose.connect(dbString);
     app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+      console.log(`Server is listening at port ${port}`);
     });
   } catch (error) {
     console.log("Error at starting the server", error);

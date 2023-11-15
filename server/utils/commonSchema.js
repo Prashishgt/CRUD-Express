@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-const commonSchema = Schema({
+const commonSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
@@ -11,4 +11,4 @@ const commonSchema = Schema({
   },
 });
 
-export default commonSchema;
+export { commonSchema };
