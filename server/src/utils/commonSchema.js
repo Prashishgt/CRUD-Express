@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema } from "mongoose";
 
-const commonSchema = new mongoose.Schema({
+const commonSchema = Schema({
   createdAt: {
     type: Date,
     default: Date.now,
@@ -11,4 +11,4 @@ const commonSchema = new mongoose.Schema({
   },
 });
 
-module.exports = { commonSchema };
+export default commonSchema;

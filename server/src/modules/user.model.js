@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const commonSchema = require('../utils/commonSchema');
+import mongoose from "mongoose";
+import commonSchema from "../utils/commonSchema";
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -7,12 +7,11 @@ const userSchema = new mongoose.Schema({
     minlength: 4,
     maxlength: 20,
     trim: true,
-    required: [true, 'Username is required'],
-
+    required: [true, "Username is required"],
   },
   email: {
     type: String,
-    required: [true, 'Valid email is required'],
+    required: [true, "Valid email is required"],
     match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/,
     trim: true,
     unique: true,
@@ -23,9 +22,10 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required, Schema'],
+    required: [true, "Password is required, Schema"],
   },
   ...commonSchema,
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
+export default User;
