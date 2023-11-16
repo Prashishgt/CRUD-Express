@@ -77,7 +77,7 @@ const updateUser = asyncWrapper(async (req, res, next) => {
   );
 
   if (!updateUser) {
-    return next(createCustomError(`No task with id : ${userId}`), 404);
+    return next(createCustomError(`No User with id : ${userId}`), 404);
   }
   res.status(200).json({ updateUser, success: true });
 });
