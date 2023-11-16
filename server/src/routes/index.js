@@ -1,6 +1,6 @@
 import { Router } from "express";
 import apiRouter from "./apiRouter.js";
-import notFound from "../utils/notFound.js";
+import notFoundMiddleware from "../middleware/notFound.js";
 
 const router = Router();
 
@@ -8,6 +8,6 @@ const router = Router();
 router.use("/api/v1", apiRouter);
 
 // route for unknown route
-router.all("*", notFound);
+router.all("*", notFoundMiddleware);
 
 export default router;

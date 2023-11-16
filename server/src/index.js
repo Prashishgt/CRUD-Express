@@ -4,7 +4,7 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import indexRouter from "./routes/index.js";
-import errorHandler from "./error/errorHandler.js";
+import errorHandlerMiddleware from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use(express.json());
 app.use("/", indexRouter);
 
 // error handler
-app.use(errorHandler);
+app.use(errorHandlerMiddleware);
 
 const start = async () => {
   try {

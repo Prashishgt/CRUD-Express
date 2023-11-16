@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { commonSchema } from "../utils/commonSchema.js";
+import { commonSchema } from "../../utils/commonSchema.js";
 
 const userSchema = new mongoose.Schema({
   name: {
