@@ -3,8 +3,8 @@ dotenv.config();
 
 import express from "express";
 import mongoose from "mongoose";
-import indexRouter from "./src/routes/index.js";
-import errorHandler from "./src/error/errorHandler.js";
+import indexRouter from "./routes/index.js";
+import errorHandler from "./error/errorHandler.js";
 
 const app = express();
 
@@ -14,11 +14,12 @@ const dbString = process.env.MONGO_URI;
 
 // middleware
 app.use(express.json());
-// error handler
-app.use(errorHandler);
 
 // routes
 app.use("/", indexRouter);
+
+// error handler
+app.use(errorHandler);
 
 const start = async () => {
   try {
