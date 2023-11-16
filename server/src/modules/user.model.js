@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
-const { Schema } = mongoose;
 import { commonSchema } from "../utils/commonSchema.js";
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 4,
@@ -28,6 +27,5 @@ const userSchema = new Schema({
   ...commonSchema,
 });
 
-const User = mongoose.model("User", userSchema);
-
-export default User;
+const UserModel = mongoose.model("Users", userSchema);
+export { UserModel };
