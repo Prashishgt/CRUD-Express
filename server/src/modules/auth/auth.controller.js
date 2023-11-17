@@ -1,38 +1,44 @@
-const registerUser = asyncWrapper(async (req, res, next) => {
-  const { name, email, age, password, cpassword } = req.body;
+import bcrypt from "bcrypt";
+import UserModel from "../users/user.model.js";
+import AuthModel from "./auth.model.js";
+import { BadRequestError } from "../../error/index.js";
 
-  if (!name || !email || !age || !password || !cpassword) {
-    return next(createCustomError("Fields cannot be empty", 404));
-  }
-  if (password !== cpassword) {
-    return next(createCustomError("Password do not match", 404));
-  }
+import { createToken, verifyJWT } from "../../utils/jwt.js";
 
-  const register = await UserModel.create({ name, email, age, password });
+// const regenerateToken = async (email) => {
+//   const auth = await AuthModel.findOne({ email });
+//   if (!auth) throw new BadRequestError(`User with ${email} does not exist`);
+//   const
+// };
 
-  if (!register) {
-    return next(createCustomError("Registration failed", 400));
-  }
+const loginUser = async (email, password) => {
+  const user = await UserModel.findOne({ email });
 
-  res.status(201).json({ message: "User created", success: true });
-});
+  if (!user) throw new BadRequestError(`User doesn't exist.`);
+  const checkPassword = await bcrypt.compare(password, user?.password);
+  if (!checkPassword) throw new BadRequestError(`Password is invalid`);
 
-const loginUser = asyncWrapper(async (req, res, next) => {
-  const { email, password } = req.body;
+  const payload = {
+    id: user?._id,
+    email: user?.email,
+  };
 
-  if (!email || !password) {
-    return next(
-      createCustomError(`${!email ? "Email" : "Password"} cannot be empty`, 404)
-    );
-  }
-  const login = await UserModel.findOne({ email });
-  if (!login) {
-    return next(createCustomError(`User with ${email} doesn't exist`, 404));
-  }
-  if (login.password !== password) {
-    return next(createCustomError(`Incorrect Password`, 400));
-  }
-  res
-    .status(200)
-    .json({ message: `${login.name} successfully logged in`, success: true });
-});
+  const token = createToken(payload);
+  return {
+    user: { name: user?.name, email: user?.email },
+    token,
+  };
+};
+
+const registerUser = async (payload) => {
+  let { password, ...rest } = payload;
+  // updating password by using passBy reference
+  rest.password = bcrypt.hash(password, process.env.SALT_ROUND);
+  console.log("Rest data", rest);
+  const createUser = await UserModel.create(rest);
+  await AuthModel.create({ email: createUser?.email, token: 1234 });
+
+  return createUser;
+};
+
+export { registerUser, loginUser };

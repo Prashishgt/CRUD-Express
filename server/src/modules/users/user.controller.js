@@ -8,14 +8,18 @@ const getAllUser = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ allUsers, success: true });
 });
 
-const getUser = asyncWrapper(async (req, res, next) => {
+const getUser = async (req, res, next) => {
   const { id: userId } = req.params;
-  const user = await UserModel.find({ _id: userId });
-  if (!user) {
-    throw new BadRequest(`User with ID ${userId} does not exist.`);
+  try {
+    const user = await UserModel.find({ _id: userId });
+    if (!user) {
+      throw new BadRequest(`User with ID ${userId} does not exist.`);
+    }
+    res.status(StatusCode.OK).json({ user, success: true });
+  } catch (error) {
+    console.log(error);
   }
-  res.status(StatusCode.OK).json({ user, success: true });
-});
+};
 
 const deleteUser = asyncWrapper(async (req, res, next) => {
   const { id: userId } = req.params;
