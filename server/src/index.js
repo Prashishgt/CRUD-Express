@@ -5,7 +5,9 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import "express-async-errors";
-import errorHandlerMiddleware from "./middleware/errorHandler";
+import errorHandlerMiddleware from "./middleware/errorHandler.js";
+
+import indexRouter from "./routes/index.js";
 
 const app = express();
 
@@ -14,6 +16,9 @@ const port = process.env.PORT || 8000;
 const dbString = process.env.MONGO_URI;
 
 app.use(express.json());
+
+// routes
+app.use("/", indexRouter);
 
 app.use(errorHandlerMiddleware);
 

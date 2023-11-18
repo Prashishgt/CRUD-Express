@@ -1,15 +1,9 @@
 import bcrypt from "bcrypt";
-import { UserModel } from "../users/user.model.js";
+import UserModel from "../user/user.model.js";
 import AuthModel from "./auth.model.js";
-import { BadRequestError } from "../../error/index.js";
+import { BadRequestError } from "../../error/customError.js";
 
-import { createToken, verifyJWT } from "../../utils/jwt.js";
-
-// const regenerateToken = async (email) => {
-//   const auth = await AuthModel.findOne({ email });
-//   if (!auth) throw new BadRequestError(`User with ${email} does not exist`);
-//   const
-// };
+import { createToken, verifyJWT } from "../../helper/jwt.js";
 
 const loginUser = async (email, password) => {
   const user = await UserModel.findOne({ email });

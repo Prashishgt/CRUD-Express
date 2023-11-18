@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { CustomApiError } from "../error/customError.js";
 
-const errorHandlerMiddleware = (err, req, res) => {
+const errorHandlerMiddleware = (err, req, res, next) => {
   if (err instanceof CustomApiError) {
     return res.status(err.statusCode).json({ message: err.message });
   }
