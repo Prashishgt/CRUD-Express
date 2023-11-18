@@ -1,24 +1,25 @@
+/* eslint-disable no-undef */
 import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
 import mongoose from "mongoose";
-import indexRouter from "./routes/index.js";
+import "express-async-errors";
 import errorHandlerMiddleware from "./middleware/errorHandler.js";
+
+import indexRouter from "./routes/index.js";
 
 const app = express();
 
-// constants
-const port = process.env.PORT;
+// const values
+const port = process.env.PORT || 8000;
 const dbString = process.env.MONGO_URI;
 
-// middleware
 app.use(express.json());
 
 // routes
 app.use("/", indexRouter);
 
-// error handler
 app.use(errorHandlerMiddleware);
 
 const start = async () => {
