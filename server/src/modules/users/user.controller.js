@@ -13,9 +13,9 @@ const getUser = async (req, res, next) => {
   try {
     const user = await UserModel.find({ _id: userId });
     if (!user) {
-      throw new BadRequest(`User with ID ${userId} does not exist.`);
+      throw new BadRequestError(`User with ID ${userId} does not exist.`);
     }
-    res.status(StatusCode.OK).json({ user, success: true });
+    res.status(StatusCodes.OK).json({ user, success: true });
   } catch (error) {
     console.log(error);
   }
@@ -26,10 +26,10 @@ const deleteUser = asyncWrapper(async (req, res, next) => {
   const deleteUser = await UserModel.findOneAndDelete({ _id: userId });
 
   if (!deleteUser) {
-    throw new BadRequest(`Delete operation failed.`);
+    throw new BadRequestError(`Delete operation failed.`);
   }
   res
-    .status(StatusCode.OK)
+    .status(StatusCodes.OK)
     .json({ message: "User successfully deleted", success: true });
 });
 
@@ -45,9 +45,9 @@ const updateUser = asyncWrapper(async (req, res, next) => {
   );
 
   if (!updateUser) {
-    throw new BadRequest(`User with ID ${userId} does not exist.`);
+    throw new BadRequestError(`User with ID ${userId} does not exist.`);
   }
-  res.status(StatusCode.OK).json({ updateUser, success: true });
+  res.status(StatusCodes.OK).json({ updateUser, success: true });
 });
 
 export { getUser, getAllUser, deleteUser, updateUser };
