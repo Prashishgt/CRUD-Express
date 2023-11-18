@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { registerUser, loginUser } from "./auth.controller";
-import { BadRequestError } from "../../error";
+import { registerUser, loginUser } from "./auth.controller.js";
+import { BadRequestError } from "../../error/index.js";
 
 const router = Router();
 
@@ -9,7 +9,8 @@ router.post("/register", async (req, res, next) => {
     const result = await registerUser(req.body);
     res.json({ data: result, msg: "Success" });
   } catch (error) {
-    next(e);
+    console.log(error);
+    next(error);
   }
 });
 

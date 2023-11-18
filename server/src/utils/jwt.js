@@ -12,7 +12,7 @@ const createToken = (payload) => {
       }
     );
 
-    return createToken;
+    return createdToken;
   } catch (error) {
     throw error;
   }

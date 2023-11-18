@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import UserModel from "../users/user.model.js";
+import { UserModel } from "../users/user.model.js";
 import AuthModel from "./auth.model.js";
 import { BadRequestError } from "../../error/index.js";
 
@@ -24,6 +24,7 @@ const loginUser = async (email, password) => {
   };
 
   const token = createToken(payload);
+  console.log("Token is", token);
   return {
     user: { name: user?.name, email: user?.email },
     token,
@@ -33,7 +34,7 @@ const loginUser = async (email, password) => {
 const registerUser = async (payload) => {
   let { password, ...rest } = payload;
   // updating password by using passBy reference
-  rest.password = bcrypt.hash(password, process.env.SALT_ROUND);
+  rest.password = await bcrypt.hash(password, 10);
   console.log("Rest data", rest);
   const createUser = await UserModel.create(rest);
   await AuthModel.create({ email: createUser?.email, token: 1234 });

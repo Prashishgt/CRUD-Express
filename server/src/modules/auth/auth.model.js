@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { commonSchema } from "../../utils/commonSchema";
+import { commonSchema } from "../../utils/commonSchema.js";
 
 const authSchema = new Schema({
   email: {
