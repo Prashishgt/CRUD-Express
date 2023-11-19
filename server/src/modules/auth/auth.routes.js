@@ -9,7 +9,6 @@ router.post("/register", async (req, res, next) => {
     const result = await registerUser(req.body);
     res.json({ data: result, msg: "Success" });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 });

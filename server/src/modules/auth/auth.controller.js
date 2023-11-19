@@ -27,11 +27,14 @@ const loginUser = async (email, password) => {
 
 const registerUser = async (payload) => {
   let { password, ...rest } = payload;
+  const checkUser = rest.email;
   // updating password by using passBy reference
+  const ifExist = await UserModel.findOne({ email: checkUser });
+  if (ifExist)
+    throw new BadRequestError(`User with ${checkUser} already exist.`);
   rest.password = await bcrypt.hash(password, 10);
-  console.log("Rest data", rest);
   const createUser = await UserModel.create(rest);
-  await AuthModel.create({ email: createUser?.email, token: 1234 });
+  await AuthModel.create({ email: createUser?.email, accessToken: 0 });
 
   return createUser;
 };
