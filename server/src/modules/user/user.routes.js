@@ -5,14 +5,15 @@ import {
   deleteUser,
   updateUser,
 } from "./user.controller.js";
-import verifyToken from "../../middleware/verifyToken.js";
+import secure from "../../helper/secure.js";
 
 const router = Router();
 
 router.route("/").get(getAllUser);
 router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
 
-router.get("/profile", verifyToken, async (req, res, next) => {
+// just for demo can be implemented in future such as roles etc
+router.get("/profile", secure(), async (req, res, next) => {
   res.json({ message: "This is the user profile page", user: req.user });
 });
 
