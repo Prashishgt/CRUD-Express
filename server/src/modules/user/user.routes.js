@@ -13,7 +13,7 @@ router.route("/").get(getAllUser);
 router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
 
 // just for demo can be implemented in future such as roles etc
-router.get("/profile", secure(), async (req, res, next) => {
+router.get("/:id/profile", secure(), async (req, res, next) => {
   res.json({ message: "This is the user profile page", user: req.user });
 });
 

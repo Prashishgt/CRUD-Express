@@ -39,4 +39,24 @@ const registerUser = async (payload) => {
   return createUser;
 };
 
-export { registerUser, loginUser };
+const regenerateJWTToken = async (email) => {
+  // email exists check
+  const user = await AuthModel.findOne({ email });
+  if (!email) throw new BadRequestError(`User with ${email} does not exist.`);
+
+  const payload = {
+    id: user?._id,
+    email: user?.email,
+  };
+
+  const newToken = createToken(payload);
+  console.log("New jwt token", newToken);
+  await AuthModel.findOneAndUpdate(
+    { email },
+    { token: newToken },
+    { new: true }
+  );
+  return true;
+};
+
+export { registerUser, loginUser, regenerateJWTToken };

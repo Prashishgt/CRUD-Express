@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { registerUser, loginUser } from "./auth.controller.js";
+import {
+  registerUser,
+  loginUser,
+  regenerateJWTToken,
+} from "./auth.controller.js";
 import { BadRequestError } from "../../error/customError.js";
 
 const router = Router();
@@ -26,4 +30,10 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+router.post("/regenerate", async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) throw new BadRequestError("Email is missing");
+  const result = await regenerateJWTToken(email);
+  res.json({ data: result, msg: "success" });
+});
 export default router;
