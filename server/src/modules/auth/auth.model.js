@@ -6,10 +6,6 @@ const authSchema = new Schema({
     type: String,
     required: [true, "Email is required"],
   },
-  otp: {
-    type: String,
-    required: [true, "otp is required.."],
-  },
   ...commonSchema,
 });
 

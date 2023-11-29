@@ -6,7 +6,6 @@ import { BadRequestError } from "../../error/customError.js";
 import { createToken, verifyJWT } from "../../helper/jwt.js";
 
 const loginUser = async (email, password) => {
-  let isRefreshToken = true;
   const user = await UserModel.findOne({ email });
 
   if (!user) throw new BadRequestError(`User doesn't exist.`);
@@ -17,8 +16,8 @@ const loginUser = async (email, password) => {
     id: user?._id,
     email: user?.email,
   };
-  const accessToken = createToken(payload, !isRefreshToken);
-  const refreshToken = createToken(payload, isRefreshToken);
+  const accessToken = createToken(payload, false);
+  const refreshToken = createToken(payload, true);
 
   return {
     user: { name: user?.name, email: user?.email },
@@ -36,12 +35,12 @@ const registerUser = async (payload) => {
     throw new BadRequestError(`User with ${checkUser} already exist.`);
   rest.password = await bcrypt.hash(password, 10);
   const createUser = await UserModel.create(rest);
-  await AuthModel.create({ email: createUser?.email, otp: 0 });
+  await AuthModel.create({ email: createUser?.email });
 
   return createUser;
 };
 
-const regenerateJWTToken = async (refreshToken) => {
+const regenerateToken = async (refreshToken) => {
   const decodedRefreshToken = verifyJWT(refreshToken);
 
   if (!decodedRefreshToken) {
@@ -66,4 +65,4 @@ const regenerateJWTToken = async (refreshToken) => {
   return { accessToken: newAccessToken };
 };
 
-export { registerUser, loginUser, regenerateJWTToken };
+export { registerUser, loginUser, regenerateToken };

@@ -1,9 +1,5 @@
 import { Router } from "express";
-import {
-  registerUser,
-  loginUser,
-  regenerateJWTToken,
-} from "./auth.controller.js";
+import { registerUser, loginUser, regenerateToken } from "./auth.controller.js";
 import { BadRequestError } from "../../error/customError.js";
 
 const router = Router();
@@ -23,13 +19,13 @@ router.post("/login", async (req, res, next) => {
   res.json({ data: result, msg: "Success" });
 });
 
-router.post("/regenerate", async (req, res, next) => {
-  const refreshToken = req.headers.authorization;
+router.post("/token", async (req, res, next) => {
+  const refreshToken = req.body;
 
   if (!refreshToken) {
     throw new BadRequestError("Refresh token is missing");
   }
-  const result = await regenerateJWTToken(refreshToken);
+  const result = await regenerateToken(refreshToken);
   res.json({ data: result, msg: "success" });
 });
 export default router;

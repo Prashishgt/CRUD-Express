@@ -8,8 +8,8 @@ const createToken = (payload, isRefreshToken) => {
     process.env.JWT_SECRET_KEY,
     {
       expiresIn: !isRefreshToken
-        ? process.env.JWT_REFRESH_EXPIRY
-        : process.env.JWT_ACCESS_EXPIRY,
+        ? process.env.JWT_ACCESS_EXPIRY
+        : process.env.JWT_REFRESH_EXPIRY,
     }
   );
 
