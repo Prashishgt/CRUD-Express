@@ -6,7 +6,7 @@ const secure = () => {
   return async (req, res, next) => {
     const token = req?.headers?.authorization;
     if (!token) throw new BadRequestError("Access Token is Required.");
-    const accessToken = token("Bearer ");
+    const accessToken = token.split("Bearer ")[1];
     const isValid = verifyJWT(accessToken);
     if (!isValid)
       throw new BadRequestError("Access Token has expired, try again later");

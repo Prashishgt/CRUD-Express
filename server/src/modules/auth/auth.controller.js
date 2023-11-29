@@ -6,6 +6,7 @@ import { BadRequestError } from "../../error/customError.js";
 import { createToken, verifyJWT } from "../../helper/jwt.js";
 
 const loginUser = async (email, password) => {
+  let isRefreshToken = true;
   const user = await UserModel.findOne({ email });
 
   if (!user) throw new BadRequestError(`User doesn't exist.`);
@@ -16,12 +17,13 @@ const loginUser = async (email, password) => {
     id: user?._id,
     email: user?.email,
   };
+  const accessToken = createToken(payload, !isRefreshToken);
+  const refreshToken = createToken(payload, isRefreshToken);
 
-  const token = createToken(payload);
-  console.log("Token is", token);
   return {
     user: { name: user?.name, email: user?.email },
-    token,
+    accessToken,
+    refreshToken,
   };
 };
 
@@ -34,29 +36,34 @@ const registerUser = async (payload) => {
     throw new BadRequestError(`User with ${checkUser} already exist.`);
   rest.password = await bcrypt.hash(password, 10);
   const createUser = await UserModel.create(rest);
-  await AuthModel.create({ email: createUser?.email, accessToken: 0 });
+  await AuthModel.create({ email: createUser?.email, otp: 0 });
 
   return createUser;
 };
 
-const regenerateJWTToken = async (email) => {
-  // email exists check
-  const user = await AuthModel.findOne({ email });
-  if (!email) throw new BadRequestError(`User with ${email} does not exist.`);
+const regenerateJWTToken = async (refreshToken) => {
+  const decodedRefreshToken = verifyJWT(refreshToken);
+
+  if (!decodedRefreshToken) {
+    throw new BadRequestError("Invalid or expired refresh token");
+  }
+
+  const { email } = decodedRefreshToken;
+
+  const user = await UserModel.findOne({ email });
+
+  if (!user) {
+    throw new BadRequestError(`User with email ${email} not found`);
+  }
 
   const payload = {
-    id: user?._id,
-    email: user?.email,
+    id: user._id,
+    email: user.email,
   };
 
-  const newToken = createToken(payload);
-  console.log("New jwt token", newToken);
-  await AuthModel.findOneAndUpdate(
-    { email },
-    { token: newToken },
-    { new: true }
-  );
-  return true;
+  const newAccessToken = createToken(payload);
+
+  return { accessToken: newAccessToken };
 };
 
 export { registerUser, loginUser, regenerateJWTToken };

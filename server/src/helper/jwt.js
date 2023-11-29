@@ -1,13 +1,15 @@
 import jwt from "jsonwebtoken";
 
-const createToken = (payload) => {
+const createToken = (payload, isRefreshToken) => {
   const createdToken = jwt.sign(
     {
       data: payload,
     },
     process.env.JWT_SECRET_KEY,
     {
-      expiresIn: process.env.JWT_EXPIRY,
+      expiresIn: !isRefreshToken
+        ? process.env.JWT_REFRESH_EXPIRY
+        : process.env.JWT_ACCESS_EXPIRY,
     }
   );
 
