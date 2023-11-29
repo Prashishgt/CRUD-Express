@@ -16,24 +16,53 @@ const loginUser = async (email, password) => {
     id: user?._id,
     email: user?.email,
   };
+  const accessToken = createToken(payload, false);
+  const refreshToken = createToken(payload, true);
 
-  const token = createToken(payload);
-  console.log("Token is", token);
   return {
     user: { name: user?.name, email: user?.email },
-    token,
+    accessToken,
+    refreshToken,
   };
 };
 
 const registerUser = async (payload) => {
   let { password, ...rest } = payload;
+  const checkUser = rest.email;
   // updating password by using passBy reference
+  const ifExist = await UserModel.findOne({ email: checkUser });
+  if (ifExist)
+    throw new BadRequestError(`User with ${checkUser} already exist.`);
   rest.password = await bcrypt.hash(password, 10);
-  console.log("Rest data", rest);
   const createUser = await UserModel.create(rest);
-  await AuthModel.create({ email: createUser?.email, token: 1234 });
+  await AuthModel.create({ email: createUser?.email });
 
   return createUser;
 };
 
-export { registerUser, loginUser };
+const regenerateToken = async (refreshToken) => {
+  const decodedRefreshToken = verifyJWT(refreshToken);
+
+  if (!decodedRefreshToken) {
+    throw new BadRequestError("Invalid or expired refresh token");
+  }
+
+  const { email } = decodedRefreshToken;
+
+  const user = await UserModel.findOne({ email });
+
+  if (!user) {
+    throw new BadRequestError(`User with email ${email} not found`);
+  }
+
+  const payload = {
+    id: user._id,
+    email: user.email,
+  };
+
+  const newAccessToken = createToken(payload);
+
+  return { accessToken: newAccessToken };
+};
+
+export { registerUser, loginUser, regenerateToken };
