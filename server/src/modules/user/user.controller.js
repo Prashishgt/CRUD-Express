@@ -5,7 +5,6 @@ import { BadRequestError } from "../../error/customError.js";
 const getAllUser = async (req, res) => {
   const allUsers = await UserModel.find({});
   if (!allUsers) throw new BadRequestError("There is no users.");
-  console.log("Here");
   res.status(StatusCodes.OK).json({ allUsers, success: true });
 };
 

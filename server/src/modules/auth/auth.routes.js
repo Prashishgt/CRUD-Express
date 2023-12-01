@@ -15,13 +15,11 @@ router.post("/login", async (req, res, next) => {
     throw new BadRequestError(`${!email ? "Email" : "Password"} is missing.`);
   }
   const result = await loginUser(email, password);
-  console.log("Result is here :", result);
   res.json({ data: result, msg: "Success" });
 });
 
 router.post("/token", async (req, res, next) => {
-  const refreshToken = req.body;
-
+  const { refreshToken } = req.body;
   if (!refreshToken) {
     throw new BadRequestError("Refresh token is missing");
   }
